@@ -1,0 +1,21 @@
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+ 
+.bg{
+  border: 3px solid red;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+ 
+}
+
+ 
+
+button{
+  border: 3px solid pink;
+}

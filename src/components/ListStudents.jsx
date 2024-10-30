@@ -14,7 +14,7 @@ const StudentsList = () => {
 
     useEffect(() => {
         console.log('view:', viewParam);
-        setTopic(`${ order=='ASC' ? "Top":"Last"} ${limit} Students with ${ order=='ASC' ? "Highest":"Lowest"} Grades`)
+        setTopic(`${ order=='DESC' ? "Top":"Last"} ${limit} Students with ${ order=='DESC' ? "Highest":"Lowest"} Grades`)
         const fetchStudents = async () => {
             try {
                 let queryParams = [];
@@ -43,7 +43,14 @@ const StudentsList = () => {
 
     
     const handleLimitChange = (e) => {
-        setLimit(e.target.value);
+        let val = e.target.value
+        if (val >=1 ) { 
+            setLimit(val);
+        }
+        else if (val <=0){
+            alert('Not allowed')
+        }
+        
     };
 
     if (loading) {
@@ -55,24 +62,28 @@ const StudentsList = () => {
     }
 
     return (
-        <div className="container mx-auto mt-5 ">
-            <h1 className="text-2xl font-bold mb-4">{topic}</h1>
+        <div 
+       
+         className="container   w-[80vw]   m-auto  mt-5 ">
+            <h1 className="text-2xl text-black font-bold mb-4">{viewParam =='' && topic}</h1>
             <div className="mb-4">
                 <button
                     className="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600"
                     onClick={() =>  setViewParam('teachers')}
                 >
-                    Show Teachers
+                     Teachers
                 </button>
                 <button
                     className="bg-yellow-500 text-white px-7 py-2   rounded hover:bg-yellow-600"
                     onClick={() =>  setViewParam('subjects')}
                 >
-                    Show Subjects
+                    {"Student's Grades"}
                 </button>
                 <button
                     className="bg-green-500 text-white px-4 py-2 ml-3 rounded mr-2 hover:bg-green-600"
-                    onClick={() =>  setViewParam('')}
+                    onClick={() => {
+                        setViewParam('studentGrades') 
+                    }}
                 >
                     Show Students CGPA
                 </button>
@@ -80,34 +91,43 @@ const StudentsList = () => {
                     className="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600"
                     onClick={() =>{
                         setOrder( 'DESC' )  
+                        setViewParam('')
                         
                     }}
                 > 
-                     Last Students
+                     Top Students
                 </button>
                 <button
                     className="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600"
                     onClick={() =>{
                         setOrder('ASC' ) 
+                        setViewParam('')
                         
                     }}
                 > 
-                     Top Students 
+                     Last Students 
                 </button>
-                <input 
+               {viewParam == '' &&  
+               <input 
                     type="number" 
                     value={limit} 
                     onChange={handleLimitChange} 
                     placeholder="Set Limit" 
                     className="border px-2 py-1"
-                />
+                />}
             </div>
 
-            {viewParam && <div className="mb-4">Currently Viewing: {viewParam}</div>}
+            {viewParam && <div className="mb-4 text-black">Currently Viewing: {viewParam =='subjects' ?' Students Grade':viewParam == 'studentGrades'?'Student CGPA':viewParam}</div>}
 
-            <table className="min-w-full bg-white border border-gray-300">
-                <thead>
-                    <tr className="bg-gray-200">
+            <div className='max-h-[52vh] overflow-auto w-full rounded-2xl cursor-pointer'>
+            <table  className=" w-full  m-auto bg-white border border-gray-300">
+                <thead
+                    style={{
+                        position: 'sticky',
+                        top: 0
+                    }}
+                >
+                    <tr className="bg-gray-200 text-red-600">
                         {students.fields.map((field, index) => (
                             <th  key={index} scope="col" className="border border-white px-4 py-2">
                                 {field.name.replace('_', ' ').toUpperCase()}
@@ -119,7 +139,8 @@ const StudentsList = () => {
                     {students.rows.map((row, rowIndex) => (
                         <tr key={rowIndex} className="hover:bg-gray-100">
                             {students.fields.map((field, fieldIndex) => (
-                                <td style={{border:'1px solid white'}} key={fieldIndex} className="border border-10  border-white px-4 py-2">
+                                <td style={{borderRight:'1px solid '  }} key={fieldIndex} className="border border-10 border-r-black border-r-[3px]  border-b-black text-black    border-white px-4 py-2
+                                ">
                                     {row[field.name]}
                                 </td>
                             ))}
@@ -127,6 +148,7 @@ const StudentsList = () => {
                     ))}
                 </tbody>
             </table>
+            </div>
         </div>
     );
 };
